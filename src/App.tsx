@@ -4,6 +4,7 @@ import Register from "./pages/auth/Register"
 import LoginPage from "./pages/auth/Login"
 import "./App.css"
 import Dashboard from "./pages/Dashboard"
+import Layout from "./components/Layout"
 
 function App() {
     return (
@@ -11,8 +12,10 @@ function App() {
             <Routes>
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<LoginPage />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-            </Routes>
+                <Route path="/" element={<Layout />}>
+                    <Route path="dashboard" element={<Dashboard />} />
+                </Route>            
+          </Routes>
             
             <Toaster />
         </Router>

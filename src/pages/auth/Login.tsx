@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { use, useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { toast } from "sonner";
@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import { loginUser } from "../../services/authService";
 import FormLogin from "../../components/auth/FormLogin";
+import { useNavigate } from "react-router-dom";
 
 type LoginValues = {
     email: string;
@@ -22,6 +23,7 @@ const validationSchema = yup.object({
 export default function LoginPage() {
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const formik = useFormik<LoginValues>({
         initialValues: {
@@ -37,8 +39,8 @@ export default function LoginPage() {
 
             if (result.success) {
                 toast.success(result.message || "Connexion réussie !");
-                // Ici tu pourrais faire une redirection vers ton dashboard par ex.
-                // navigate("/dashboard");
+                
+                navigate("/dashboard");
             } else {
                 if (result.fieldErrors) {
                     setErrors(result.fieldErrors);
