@@ -22,8 +22,11 @@ export const loginUser = async (values: LoginValues) => {
     try {
         const res = await axios.post(`${API_BASE}/auth/login`, values);
         const token = res.data.data.token;
+        const user = res.data.data.user;
 
+        localStorage.setItem('user', JSON.stringify(user));
         localStorage.setItem('token', token);
+        
         return { success: true, data: res.data };
     } 
     catch (err: any) {
