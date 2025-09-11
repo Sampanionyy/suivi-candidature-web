@@ -1,7 +1,7 @@
 import { User, LogOut, Home, UserCircle, Briefcase, BarChart3 } from "lucide-react"
 import { Outlet } from "react-router-dom"
 import type { ReactNode } from 'react'
-import type { User as UserType } from "../interfaces/types"
+import type { IUser as UserType } from "../interfaces/types"
 
 interface LayoutProps {
     children?: ReactNode
@@ -18,9 +18,9 @@ export default function Layout({ children, onLogout }: LayoutProps) {
 
     const navigationItems = [
         { href: "/dashboard", icon: Home, label: "Tableau de bord" },
-        { href: "/dashboard/applications", icon: Briefcase, label: "Candidatures" },
-        { href: "/dashboard/statistics", icon: BarChart3, label: "Statistiques" },
-        { href: "/dashboard/profile", icon: UserCircle, label: "Profil", requiresAuth: true },
+        { href: "/applications", icon: Briefcase, label: "Candidatures" },
+        { href: "/statistics", icon: BarChart3, label: "Statistiques" },
+        { href: "/profile", icon: UserCircle, label: "Profil", requiresAuth: true },
     ]
 
     const filteredNavigation = navigationItems.filter(item => 
