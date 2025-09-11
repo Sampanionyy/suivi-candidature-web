@@ -1,4 +1,4 @@
-import { User, LogOut, Home, UserCircle, Settings, Briefcase, BarChart3, Bell } from "lucide-react"
+import { User, LogOut, Home, UserCircle, Briefcase, BarChart3 } from "lucide-react"
 import { Outlet } from "react-router-dom"
 import type { ReactNode } from 'react'
 import type { User as UserType } from "../interfaces/types"
@@ -21,7 +21,6 @@ export default function Layout({ children, onLogout }: LayoutProps) {
         { href: "/dashboard/applications", icon: Briefcase, label: "Candidatures" },
         { href: "/dashboard/statistics", icon: BarChart3, label: "Statistiques" },
         { href: "/dashboard/profile", icon: UserCircle, label: "Profil", requiresAuth: true },
-        { href: "/dashboard/settings", icon: Settings, label: "Paramètres", requiresAuth: true },
     ]
 
     const filteredNavigation = navigationItems.filter(item => 
@@ -32,8 +31,8 @@ export default function Layout({ children, onLogout }: LayoutProps) {
         <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
             {/* Sidebar */}
             <aside className="w-72 bg-white shadow-xl border-r border-gray-200 relative">
-                {/* Header du sidebar */}
-                <div className="p-6 border-b border-gray-200">
+                {/* Header du sidebar - même hauteur que le header principal */}
+                <div className="h-20 px-6 border-b border-gray-200 flex items-center">
                     <div className="flex items-center space-x-3">
                         <div className="w-10 h-10 bg-gradient-to-r from-fuchsia-300 to-pink-300 rounded-xl flex items-center justify-center">
                             <Briefcase className="w-6 h-6 text-white" />
@@ -70,9 +69,9 @@ export default function Layout({ children, onLogout }: LayoutProps) {
 
             {/* Contenu principal */}
             <main className="flex-1 flex flex-col">
-                {/* Top bar */}
-                <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 p-4 shadow-sm">
-                    <div className="flex items-center justify-between">
+                {/* Top bar - hauteur fixe pour alignement */}
+                <header className="h-20 bg-white/80 backdrop-blur-sm border-b border-gray-200 px-6 shadow-sm flex items-center">
+                    <div className="flex items-center justify-between w-full">
                         <div>
                             {user ? (
                                 <>
@@ -91,13 +90,7 @@ export default function Layout({ children, onLogout }: LayoutProps) {
                             )}
                         </div>
                         
-                        <div className="flex items-center space-x-4">
-                            {user && (
-                                <button className="p-2 text-gray-600 hover:text-fuchsia-600 hover:bg-fuchsia-50 rounded-xl transition-all duration-200">
-                                    <Bell className="w-5 h-5" />
-                                </button>
-                            )}
-                            
+                        <div className="flex items-center space-x-4">                            
                             {user ? (
                                 <div className="flex items-center space-x-3">
                                     <a 
