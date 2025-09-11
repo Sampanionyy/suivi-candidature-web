@@ -21,8 +21,12 @@ interface LoginValues {
 export const loginUser = async (values: LoginValues) => {
     try {
         const res = await axios.post(`${API_BASE}/auth/login`, values);
+        const token = res.data.data.token;
+
+        localStorage.setItem('token', token);
         return { success: true, data: res.data };
-    } catch (err: any) {
+    } 
+    catch (err: any) {
         const data: BackendError = err?.response?.data;
 
         if (data) {
