@@ -6,21 +6,25 @@ import "./App.css"
 import Dashboard from "./pages/Dashboard"
 import Layout from "./components/Layout"
 import ApplicationsTable from "./pages/Applications"
+import { UserProvider } from './contexts/UserContext';
 
 function App() {
     return (
-        <Router>
-            <Routes>
-                <Route path="/register" element={<Register />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/" element={<Layout />}>
-                    <Route path="dashboard" element={<Dashboard />} />
-                    <Route path="applications" element={<ApplicationsTable />} />
-                </Route>            
-          </Routes>
-            
-            <Toaster />
-        </Router>
+        <UserProvider>
+            <Router>
+                <Routes>
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/" element={<Layout />}>
+                        <Route path="dashboard" element={<Dashboard />} />
+                        <Route path="applications" element={<ApplicationsTable />} />
+                    </Route>            
+            </Routes>
+                
+                <Toaster />
+            </Router>
+        </UserProvider>
+
     )
 }
 

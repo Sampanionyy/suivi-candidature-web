@@ -1,7 +1,7 @@
 import { User, LogOut, Home, UserCircle, Briefcase, BarChart3 } from "lucide-react"
 import { Outlet } from "react-router-dom"
 import type { ReactNode } from 'react'
-import type { IUser as UserType } from "../interfaces/types"
+import { useUser } from "../contexts/UserContext"
 
 interface LayoutProps {
     children?: ReactNode
@@ -9,11 +9,10 @@ interface LayoutProps {
 }
 
 export default function Layout({ children, onLogout }: LayoutProps) {    
-    const user: UserType = JSON.parse(localStorage.getItem("user") || "null") 
+    const { user, logout } = useUser();
+
     const handleLogout = () => {
-        if (onLogout) {
-            onLogout()
-        }
+        logout();
     }
 
     const navigationItems = [

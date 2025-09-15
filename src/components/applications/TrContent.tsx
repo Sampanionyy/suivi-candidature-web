@@ -4,7 +4,7 @@ import React from 'react'
 interface TrContentProps {
     app: {
         id: number
-        user_id: number
+        user_id: number | null
         position: string
         company: string
         job_url: string | null

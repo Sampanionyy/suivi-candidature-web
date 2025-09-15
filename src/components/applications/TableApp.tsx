@@ -20,7 +20,7 @@ import TrContent from './TrContent'
 import TrFooter from './TrFooter'
 
 interface TableAppProps {
-    userId: number // Pour assigner la candidature au user
+    userId: number | null
     applications: IApplication[]
     filteredAndSortedApplications: IApplication[]
     setApplications: React.Dispatch<React.SetStateAction<IApplication[]>>

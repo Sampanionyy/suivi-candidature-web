@@ -7,7 +7,7 @@ export interface IUser {
 
 export interface IApplication {
     id: number;
-    user_id: number;
+    user_id: number | null;
     position: string;
     company: string;
     job_url: string | null;

@@ -1,8 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import {
-    ChevronDown,
-    ChevronUp,
-} from 'lucide-react';
+import { useState, useMemo, useEffect } from 'react';
 import apiClient from '../services/apiClient';
 import { toast } from 'sonner';
 import type { IApplication } from '../interfaces/types';
@@ -10,6 +6,7 @@ import Header from '../components/applications/Header';
 import TableApp from '../components/applications/TableApp';
 import { filterAndSortApplications } from '../utils/filterAndSortApplications';
 import TableFooterApp from '../components/applications/TableFooterApp';
+import { useUser } from '../contexts/UserContext';
 
 const statusOptions = [
     { value: 'applied', label: 'Candidature envoyée' },
@@ -21,12 +18,13 @@ const statusOptions = [
 
 export default function ApplicationsTable() {
     const [applications, setApplications] = useState<IApplication[]>([]);
-    const user = JSON.parse(localStorage.getItem("user") || "null");
+    const { user } = useUser();
+
+
     useEffect(() => {
         const fetchApplications = async () => {
             try {
                 const response = await apiClient.get('/applications');
-                console.log({response})
                 setApplications(response.data.data);
             } catch (err: any) {
                 console.error(err);
@@ -118,7 +116,7 @@ export default function ApplicationsTable() {
                 sortConfig={sortConfig}
                 isAddingNew={isAddingNew}
                 setIsAddingNew={setIsAddingNew}
-                userId={user.id ?? null}
+                userId={user?.id ?? null}
                 applications={applications}
                 setApplications={setApplications}
                 filteredAndSortedApplications={filteredAndSortedApplications}
