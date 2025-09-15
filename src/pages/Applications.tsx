@@ -20,7 +20,6 @@ export default function ApplicationsTable() {
     const [applications, setApplications] = useState<IApplication[]>([]);
     const { user } = useUser();
 
-
     useEffect(() => {
         const fetchApplications = async () => {
             try {
@@ -110,26 +109,29 @@ export default function ApplicationsTable() {
     return (
         <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
             <Header filters={filters} setFilters={setFilters} setIsAddingNew={setIsAddingNew} />
+            {user && (
+                <>
+                    <TableApp 
+                        handleSort={handleSort}
+                        sortConfig={sortConfig}
+                        isAddingNew={isAddingNew}
+                        setIsAddingNew={setIsAddingNew}
+                        userId={user?.id ?? null}
+                        applications={applications}
+                        setApplications={setApplications}
+                        filteredAndSortedApplications={filteredAndSortedApplications}
+                        formatDate={formatDate}
+                        statusOptions={statusOptions}
+                        handleAddNew={handleAddNew}
+                    />
 
-            <TableApp 
-                handleSort={handleSort}
-                sortConfig={sortConfig}
-                isAddingNew={isAddingNew}
-                setIsAddingNew={setIsAddingNew}
-                userId={user?.id ?? null}
-                applications={applications}
-                setApplications={setApplications}
-                filteredAndSortedApplications={filteredAndSortedApplications}
-                formatDate={formatDate}
-                statusOptions={statusOptions}
-                handleAddNew={handleAddNew}
-            />
-
-            {filteredAndSortedApplications.length > 0 && (
-                <TableFooterApp
-                    filteredAndSortedApplications={filteredAndSortedApplications}
-                    applications={applications}                
-                />
+                    {filteredAndSortedApplications.length > 0 && (
+                        <TableFooterApp
+                            filteredAndSortedApplications={filteredAndSortedApplications}
+                            applications={applications}                
+                        />
+                    )}
+                </>
             )}
         </div>
     );

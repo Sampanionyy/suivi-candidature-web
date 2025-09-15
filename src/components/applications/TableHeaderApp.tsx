@@ -2,12 +2,12 @@ import React from 'react'
 import SortButton from './SortButton'
 import type { IApplication } from '../../interfaces/types';
 
-interface TableHeaderAppProps {
+interface ThTitleProps {
     sortConfig: { key: keyof IApplication; direction: 'asc' | 'desc' } | null;
     onSort: (column: keyof IApplication) => void;
 }
 
-const TableHeaderApp: React.FC<TableHeaderAppProps> = ({ sortConfig, onSort }) => {
+const ThTitle: React.FC<ThTitleProps> = ({ sortConfig, onSort }) => {
     return (
         <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
@@ -47,4 +47,4 @@ const TableHeaderApp: React.FC<TableHeaderAppProps> = ({ sortConfig, onSort }) =
     )
 }
 
-export default TableHeaderApp
+export default ThTitle

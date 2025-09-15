@@ -19,8 +19,7 @@ function App() {
                         <Route path="dashboard" element={<Dashboard />} />
                         <Route path="applications" element={<ApplicationsTable />} />
                     </Route>            
-            </Routes>
-                
+                </Routes>
                 <Toaster />
             </Router>
         </UserProvider>

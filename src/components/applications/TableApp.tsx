@@ -1,23 +1,12 @@
-import React, { useState } from 'react'
+import React from 'react'
 import type { IApplication } from '../../interfaces/types'
-import {
-    Briefcase,
-    Building2,
-    Calendar,
-    FileText,
-    Link,
-    Save,
-    X,
-    Edit,
-    Trash2,
-    Eye
-} from 'lucide-react'
-import { toast } from 'sonner'
-import apiClient from '../../services/apiClient'
-import TableHeaderApp from './TableHeaderApp'
 import TrInput from './TrInput'
 import TrContent from './TrContent'
 import TrFooter from './TrFooter'
+import ThTitle from './TableHeaderApp'
+import { useFormik } from 'formik'
+import { addApplication } from '../../services/applicationService'
+import { toast } from 'sonner'
 
 interface TableAppProps {
     userId: number | null
@@ -31,6 +20,18 @@ interface TableAppProps {
     setIsAddingNew: React.Dispatch<React.SetStateAction<boolean>>
     sortConfig: { key: keyof IApplication; direction: 'asc' | 'desc' } | null
     handleSort: (column: keyof IApplication) => void
+}
+type FormValues = {
+    user_id: number | null;
+    position: string;
+    company: string;
+    job_url: string | null;
+    applied_date: string;
+    status: IApplication['status'];
+    interview_date: string | null;
+    notes: string | null;
+    cv_path: string | null;
+    cover_letter_path: string | null;
 }
 
 const statusColors = {
@@ -54,34 +55,70 @@ const TableApp: React.FC<TableAppProps> = ({
     isAddingNew,
     setIsAddingNew
 }) => {
-    const [newApplication, setNewApplication] = useState<Omit<IApplication, 'id' | 'created_at' | 'updated_at'>>({
-        user_id: userId,
-        position: '',
-        company: '',
-        job_url: null,
-        applied_date: new Date().toISOString().split('T')[0],
-        status: 'applied',
-        interview_date: null,
-        notes: null,
-        cv_path: null,
-        cover_letter_path: null
+    const formik = useFormik<FormValues>({
+        initialValues: {
+            user_id: userId,
+            position: '',
+            company: '',
+            job_url: null,
+            applied_date: new Date().toISOString().split('T')[0],
+            status: 'applied',
+            interview_date: null,
+            notes: null,
+            cv_path: null,
+            cover_letter_path: null
+        },
+        onSubmit: async (values, { setErrors, resetForm }) => {
+            try {
+                const result = await addApplication(values);
+                console.log({result})
+
+                if (result.success) {
+                    const newApp: IApplication = {
+                        id: applications.length ? Math.max(...applications.map(app => app.id)) + 1 : 1,
+                        ...values,
+                        created_at: new Date().toISOString(),
+                        updated_at: new Date().toISOString()
+                    };
+                    setApplications(prev => [...prev, newApp]);
+
+                    toast.success(result.message || "Candidature ajoutée avec succès !");
+
+                    setIsAddingNew(false);
+
+                    resetForm();
+                } else {
+                    if (result.fieldErrors) {
+                        setErrors(result.fieldErrors);
+                    } else {
+                        toast.error(result.message || "Une erreur est survenue lors de l'ajout");
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+                toast.error("Une erreur inattendue est survenue.");
+            } finally {
+                // setLoading(false);
+            }
+        }
+
     })
 
     return (
         <div className="overflow-x-auto">
             <table className="w-full">
-                <TableHeaderApp sortConfig={sortConfig} onSort={handleSort} />
+                <ThTitle sortConfig={sortConfig} onSort={handleSort} />
 
                 <tbody className="bg-white divide-y divide-gray-200">
                     {isAddingNew && (
                         <TrInput
-                            newApplication={newApplication}
-                            setNewApplication={setNewApplication}
+                            formik={formik}
                             statusOptions={statusOptions}
-                            handleAddNew={handleAddNew}
                             setIsAddingNew={setIsAddingNew}
                         />
                     )}
+
+
 
                     {filteredAndSortedApplications.map((app) => (
                         <TrContent 
