@@ -27,7 +27,7 @@ export interface IApplication extends IApplicationBase {
 
 // Envoies (formulaire avant upload)
 export interface IApplicationForm extends IApplicationBase {
-    id: number | null;
+    id: number;
     cv_path: File | null;
     cover_letter_path: File | null;
 }

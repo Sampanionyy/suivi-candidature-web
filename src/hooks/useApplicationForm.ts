@@ -75,7 +75,7 @@ export const useApplicationForm = (
                 }
             } catch (err) {
                 console.error("Erreur lors de l'ajout", err)
-                toast.error("Une erreur est survenue 🚨")
+                toast.error("Une erreur est survenue")
             } finally {
                 setLoading(false)
             }

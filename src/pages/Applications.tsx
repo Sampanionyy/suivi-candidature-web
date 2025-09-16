@@ -7,6 +7,7 @@ import TableApp from '../components/applications/TableApp';
 import { filterAndSortApplications } from '../utils/filterAndSortApplications';
 import TableFooterApp from '../components/applications/TableFooterApp';
 import { useUser } from '../contexts/UserContext';
+import { useApplicationForm } from '../hooks/useApplicationForm';
 
 const statusOptions = [
     { value: 'applied', label: 'Candidature envoyée' },
@@ -49,7 +50,6 @@ export default function ApplicationsTable() {
     //const [editingId, setEditingId] = useState<number | null>(null);
 
     const [newApplication, setNewApplication] = useState<Partial<IApplicationForm>>({
-        id: null,
         position: '',
         company: '',
         job_url: '',
@@ -70,37 +70,23 @@ export default function ApplicationsTable() {
         return filterAndSortApplications(applications, filters, sortConfig ?? undefined);
     }, [applications, filters, sortConfig]);
 
-    const handleAddNew = () => {
-        if (newApplication.position && newApplication.company) {
-            const newApp: IApplication = {
-                id: Math.max(...applications.map(a => a.id)) + 1,
-                user_id: user?.id ?? null, 
-                position: newApplication.position!,
-                company: newApplication.company!,
-                job_url: newApplication.job_url || null,
-                applied_date: newApplication.applied_date!,
-                status: newApplication.status as any || 'applied',
-                interview_date: newApplication.interview_date || null,
-                notes: newApplication.notes || null,
-                cv_path: null,
-                cover_letter_path: null,
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString()
-            };
+    const { formik } = useApplicationForm(
+        setApplications,
+        setIsAddingNew,
+        applications,
+        user?.id ?? null
+    )
 
-            setApplications(prev => [newApp, ...prev]);
-            setIsAddingNew(false);
-            setNewApplication({
-                position: '',
-                company: '',
-                job_url: '',
-                applied_date: new Date().toISOString().split('T')[0],
-                status: 'applied',
-                interview_date: '',
-                notes: ''
-            });
+    const handleDelete = async (id: number) => {
+        try {
+            await apiClient.delete(`/applications/${id}`);
+            setApplications(prev => prev.filter(app => app.id !== id));
+            toast.success('Candidature supprimée avec succès !');
+        } catch (err) {
+            console.error(err);
+            toast.error('Échec de la suppression de la candidature');
         }
-    };
+    }
 
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString('fr-FR');
@@ -112,17 +98,15 @@ export default function ApplicationsTable() {
             {user && (
                 <>
                     <TableApp 
+                        handleDelete={handleDelete}
+                        formik={formik}
                         handleSort={handleSort}
                         sortConfig={sortConfig}
                         isAddingNew={isAddingNew}
                         setIsAddingNew={setIsAddingNew}
-                        userId={user?.id ?? null}
-                        applications={applications}
-                        setApplications={setApplications}
                         filteredAndSortedApplications={filteredAndSortedApplications}
                         formatDate={formatDate}
                         statusOptions={statusOptions}
-                        handleAddNew={handleAddNew}
                     />
 
                     {filteredAndSortedApplications.length > 0 && (

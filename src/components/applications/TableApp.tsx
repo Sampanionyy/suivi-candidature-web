@@ -5,19 +5,19 @@ import TrContent from './TrContent';
 import TrFooter from './TrFooter';
 import ThTitle from './TableHeaderApp';
 import { useApplicationForm } from '../../hooks/useApplicationForm';
+import DeleteModal from './DeleteModal';
+import { useModal } from '../../hooks/useModal';
 
 interface TableAppProps {
-    userId: number | null;
-    applications: IApplication[];
-    filteredAndSortedApplications: IApplication[];
-    setApplications: React.Dispatch<React.SetStateAction<IApplication[]>>;
-    formatDate: (dateStr: string) => string;
-    statusOptions: { value: string; label: string }[];
-    handleAddNew: () => void;
-    isAddingNew: boolean;
-    setIsAddingNew: React.Dispatch<React.SetStateAction<boolean>>;
     sortConfig: { key: keyof IApplication; direction: 'asc' | 'desc' } | null;
     handleSort: (column: keyof IApplication) => void;
+    formik: ReturnType<typeof useApplicationForm>['formik'];
+    filteredAndSortedApplications: IApplication[];
+    formatDate: (dateStr: string) => string;
+    statusOptions: { value: string; label: string }[];
+    isAddingNew: boolean;
+    setIsAddingNew: React.Dispatch<React.SetStateAction<boolean>>;
+    handleDelete: (id: number) => void;
 }
 
 const statusColors = {
@@ -31,21 +31,22 @@ const statusColors = {
 const TableApp: React.FC<TableAppProps> = ({
     sortConfig,
     handleSort,
-    userId,
-    applications,
-    setApplications,
+    formik,
     filteredAndSortedApplications,
     formatDate,
     statusOptions,
     isAddingNew,
     setIsAddingNew,
+    handleDelete
 }) => {
-    const { formik } = useApplicationForm(
-        setApplications,
-        setIsAddingNew,
-        applications,
-        userId
-    )
+    const { isOpen, open, close } = useModal(); // <-- un seul hook central
+    const [selectedAppId, setSelectedAppId] = React.useState<number | null>(null);
+
+    const handleOpenDeleteModal = React.useCallback((id: number) => {
+        setSelectedAppId(id);
+        open();
+    }, [open]);
+
 
     return (
         <div className="overflow-x-auto">
@@ -53,7 +54,13 @@ const TableApp: React.FC<TableAppProps> = ({
                 <ThTitle sortConfig={sortConfig} onSort={handleSort} />
 
                 <tbody className="bg-white divide-y divide-gray-200">
-                    {isAddingNew && <TrInput formik={formik} statusOptions={statusOptions} setIsAddingNew={setIsAddingNew} />}
+                    {isAddingNew && (
+                        <TrInput
+                            formik={formik}
+                            statusOptions={statusOptions}
+                            setIsAddingNew={setIsAddingNew}
+                        />
+                    )}
 
                     {filteredAndSortedApplications.map(app => (
                         <TrContent
@@ -62,12 +69,28 @@ const TableApp: React.FC<TableAppProps> = ({
                             formatDate={formatDate}
                             statusColors={statusColors}
                             statusOptions={statusOptions}
+                            onDelete={() => handleOpenDeleteModal(app.id)}
                         />
                     ))}
 
-                    {filteredAndSortedApplications.length === 0 && !isAddingNew && <TrFooter setIsAddingNew={setIsAddingNew} />}
+                    {filteredAndSortedApplications.length === 0 && !isAddingNew && (
+                        <TrFooter setIsAddingNew={setIsAddingNew} />
+                    )}
                 </tbody>
             </table>
+
+            {/* DeleteModal centralisé */}
+            {selectedAppId !== null && (
+                <DeleteModal
+                    isOpen={isOpen}
+                    onClose={close}
+                    onConfirm={() => {
+                        handleDelete(selectedAppId);
+                        close();
+                        setSelectedAppId(null);
+                    }}
+                />
+            )}
         </div>
     );
 };

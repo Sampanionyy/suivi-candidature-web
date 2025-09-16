@@ -1,52 +1,45 @@
-import { Briefcase, Building2, Calendar, Edit, Eye, FileText, Link, Trash2 } from 'lucide-react'
-import React from 'react'
+import { Briefcase, Building2, Calendar, Edit, Eye, FileText, Link, Trash2 } from "lucide-react";
+import React from "react";
+import type { IApplication } from "../../interfaces/types";
 
 interface TrContentProps {
-    app: {
-        id: number
-        user_id: number | null
-        position: string
-        company: string
-        job_url: string | null
-        applied_date: string
-        status: string
-        interview_date: string | null
-        cv_path: string | null
-        cover_letter_path: string | null
-        created_at: string
-        updated_at: string
-    }
-    formatDate: (dateStr: string) => string
-    statusColors: { [key: string]: string }
-    statusOptions: { value: string; label: string }[]
+    app: IApplication;
+    formatDate: (dateStr: string) => string;
+    statusColors: { [key: string]: string };
+    statusOptions: { value: string; label: string }[];
+    onDelete: () => void; 
 }
 
-const TrContent : React.FC<TrContentProps> = ({ app, formatDate, statusColors, statusOptions }) => {
+const TrContent: React.FC<TrContentProps> = React.memo(({ app, formatDate, statusColors, statusOptions, onDelete }) => {
     return (
-        <tr key={app.id} className="hover:bg-gray-50 transition-colors">
+        <tr className="hover:bg-gray-50 transition-colors">
             <td className="px-6 py-4">
                 <div className="flex items-center space-x-2">
                     <Briefcase className="w-4 h-4 text-gray-400" />
                     <span className="font-medium text-gray-900">{app.position}</span>
                 </div>
             </td>
+
             <td className="px-6 py-4">
                 <div className="flex items-center space-x-2">
                     <Building2 className="w-4 h-4 text-gray-400" />
                     <span className="text-gray-900">{app.company}</span>
                 </div>
             </td>
+
             <td className="px-6 py-4">
                 <div className="flex items-center space-x-2">
                     <Calendar className="w-4 h-4 text-gray-400" />
                     <span className="text-gray-900">{formatDate(app.applied_date)}</span>
                 </div>
             </td>
+
             <td className="px-6 py-4">
                 <span className={`px-3 py-1 rounded-full text-xs font-medium ${statusColors[app.status]}`}>
-                    {statusOptions.find(s => s.value === app.status)?.label}
+                    {statusOptions.find((s) => s.value === app.status)?.label}
                 </span>
             </td>
+
             <td className="px-6 py-4">
                 {app.interview_date ? (
                     <div className="flex items-center space-x-2">
@@ -57,6 +50,7 @@ const TrContent : React.FC<TrContentProps> = ({ app, formatDate, statusColors, s
                     <span className="text-gray-400">-</span>
                 )}
             </td>
+
             <td className="px-6 py-4">
                 <div className="flex space-x-2">
                     {app.cv_path && (
@@ -76,6 +70,7 @@ const TrContent : React.FC<TrContentProps> = ({ app, formatDate, statusColors, s
                     )}
                 </div>
             </td>
+
             <td className="px-6 py-4">
                 <div className="flex space-x-2">
                     <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-md transition-colors" title="Voir détails">
@@ -84,13 +79,17 @@ const TrContent : React.FC<TrContentProps> = ({ app, formatDate, statusColors, s
                     <button className="p-2 text-fuchsia-600 hover:bg-fuchsia-100 rounded-md transition-colors" title="Modifier">
                         <Edit className="w-4 h-4" />
                     </button>
-                    <button className="p-2 text-red-600 hover:bg-red-100 rounded-md transition-colors" title="Supprimer">
+                    <button
+                        onClick={onDelete} 
+                        className="p-2 text-red-600 hover:bg-red-100 rounded-md transition-colors"
+                        title="Supprimer"
+                    >
                         <Trash2 className="w-4 h-4" />
                     </button>
                 </div>
             </td>
         </tr>
-    )
-}
+    );
+});
 
-export default TrContent
+export default TrContent;

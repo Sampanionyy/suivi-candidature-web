@@ -94,10 +94,12 @@ export const updateApplication = async (id: number, values: Partial<IApplication
 
 export const deleteApplication = async (id: number) => {
     try {
-        const res = await apiClient.delete(`/applications/${id}`);
+        await apiClient.delete(`/applications/${id}`);
+
         return { success: true };
     } catch (err: any) {
         const data: BackendError = err?.response?.data;
+        
         return { success: false, message: data?.message || 'Impossible de contacter le serveur' };
     }
 };
