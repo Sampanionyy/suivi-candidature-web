@@ -1,31 +1,15 @@
-import axios from 'axios';
-
-const API_BASE = import.meta.env.VITE_API_URL || '';
+import type { IApplicationForm } from '../interfaces/types';
+import apiClient from './apiClient';
 
 interface BackendError {
     errors?: Record<string, string[]>;
     message?: string;
 }
 
-export interface ApplicationValues {
-    user_id: number | null;
-    position: string;
-    company: string;
-    job_url?: string | null;
-    applied_date: string;
-    status: 'applied' | 'interview' | 'rejected' | 'accepted' | 'pending';
-    interview_date?: string | null;
-    notes?: string | null;
-    cv_path?: string | null;
-    cover_letter_path?: string | null;
-}
-
 export const getApplications = async () => {
     try {
-        const token = localStorage.getItem('token');
-        const res = await axios.get(`${API_BASE}/applications`, {
-            headers: { Authorization: `Bearer ${token}` }
-        });
+        const res = await apiClient.get(`/applications`);
+        console.log({res})
         return { success: true, data: res.data };
     } catch (err: any) {
         const data: BackendError = err?.response?.data;
@@ -33,12 +17,24 @@ export const getApplications = async () => {
     }
 };
 
-export const addApplication = async (values: ApplicationValues) => {
+export const addApplication = async (values: Partial<IApplicationForm>) => {
     try {
-        const token = localStorage.getItem('token');
-        const res = await axios.post(`${API_BASE}/applications`, values, {
-            headers: { Authorization: `Bearer ${token}` }
+        const formData = new FormData();
+
+        Object.entries(values).forEach(([key, value]) => {
+            if (value instanceof File) {
+                formData.append(key, value);
+            } else if (value !== undefined && value !== null) {
+                formData.append(key, String(value));
+            }
         });
+
+        const res = await apiClient.post(`/applications`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data', 
+            },
+        });
+
         return { success: true, data: res.data };
     } catch (err: any) {
         const data: BackendError = err?.response?.data;
@@ -66,12 +62,9 @@ export const addApplication = async (values: ApplicationValues) => {
     }
 };
 
-export const updateApplication = async (id: number, values: Partial<ApplicationValues>) => {
+export const updateApplication = async (id: number, values: Partial<IApplicationForm>) => {
     try {
-        const token = localStorage.getItem('token');
-        const res = await axios.put(`${API_BASE}/applications/${id}`, values, {
-            headers: { Authorization: `Bearer ${token}` }
-        });
+        const res = await apiClient.put(`/applications/${id}`, values);
         return { success: true, data: res.data };
     } catch (err: any) {
         const data: BackendError = err?.response?.data;
@@ -101,10 +94,7 @@ export const updateApplication = async (id: number, values: Partial<ApplicationV
 
 export const deleteApplication = async (id: number) => {
     try {
-        const token = localStorage.getItem('token');
-        await axios.delete(`${API_BASE}/applications/${id}`, {
-            headers: { Authorization: `Bearer ${token}` }
-        });
+        const res = await apiClient.delete(`/applications/${id}`);
         return { success: true };
     } catch (err: any) {
         const data: BackendError = err?.response?.data;

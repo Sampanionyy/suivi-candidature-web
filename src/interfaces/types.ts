@@ -1,12 +1,11 @@
 export interface IUser {
-  id: string
-  name: string
-  email: string
-  avatar?: string | null
+    id: string
+    name: string
+    email: string
+    avatar?: string | null
 }
 
-export interface IApplication {
-    id: number;
+interface IApplicationBase {
     user_id: number | null;
     position: string;
     company: string;
@@ -15,8 +14,20 @@ export interface IApplication {
     status: 'applied' | 'interview' | 'rejected' | 'accepted' | 'pending';
     interview_date: string | null;
     notes: string | null;
-    cv_path: string | null;
-    cover_letter_path: string | null;
     created_at: string;
     updated_at: string;
+}
+
+// Stocke (depuis API)
+export interface IApplication extends IApplicationBase {
+    id: number;
+    cv_path: string | null;
+    cover_letter_path: string | null;
+}
+
+// Envoies (formulaire avant upload)
+export interface IApplicationForm extends IApplicationBase {
+    id: number | null;
+    cv_path: File | null;
+    cover_letter_path: File | null;
 }

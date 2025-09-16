@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import apiClient from '../services/apiClient';
 import { toast } from 'sonner';
-import type { IApplication } from '../interfaces/types';
+import type { IApplication, IApplicationForm } from '../interfaces/types';
 import Header from '../components/applications/Header';
 import TableApp from '../components/applications/TableApp';
 import { filterAndSortApplications } from '../utils/filterAndSortApplications';
@@ -13,7 +13,6 @@ const statusOptions = [
     { value: 'interview', label: 'Entretien' },
     { value: 'rejected', label: 'Refusée' },
     { value: 'accepted', label: 'Acceptée' },
-    { value: 'pending', label: 'En attente' }
 ];
 
 export default function ApplicationsTable() {
@@ -47,9 +46,10 @@ export default function ApplicationsTable() {
     } | null>(null);
 
     const [isAddingNew, setIsAddingNew] = useState(false);
-    const [editingId, setEditingId] = useState<number | null>(null);
+    //const [editingId, setEditingId] = useState<number | null>(null);
 
-    const [newApplication, setNewApplication] = useState<Partial<IApplication>>({
+    const [newApplication, setNewApplication] = useState<Partial<IApplicationForm>>({
+        id: null,
         position: '',
         company: '',
         job_url: '',
@@ -74,7 +74,7 @@ export default function ApplicationsTable() {
         if (newApplication.position && newApplication.company) {
             const newApp: IApplication = {
                 id: Math.max(...applications.map(a => a.id)) + 1,
-                user_id: 10, // Replace with actual user ID
+                user_id: user?.id ?? null, 
                 position: newApplication.position!,
                 company: newApplication.company!,
                 job_url: newApplication.job_url || null,
