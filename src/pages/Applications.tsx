@@ -62,6 +62,11 @@ export default function ApplicationsTable() {
         return filterAndSortApplications(applications, filters, sortConfig ?? undefined);
     }, [applications, filters, sortConfig]);
 
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [filters, sortConfig]);
+
     const appToEdit = editingId ? applications.find(app => app.id === editingId) : undefined;
 
     const { formik } = useApplicationForm(
