@@ -8,6 +8,7 @@ import { filterAndSortApplications } from '../utils/filterAndSortApplications';
 import TableFooterApp from '../components/applications/TableFooterApp';
 import { useUser } from '../contexts/UserContext';
 import { useApplicationForm } from '../hooks/useApplicationForm';
+import AppPagination from '../components/AppPagination';
 
 const statusOptions = [
     { value: 'applied', label: 'Candidature envoyée' },
@@ -125,9 +126,28 @@ export default function ApplicationsTable() {
         return new Date(dateString).toLocaleDateString('fr-FR');
     };
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
+
+    const totalPages = Math.ceil(filteredAndSortedApplications.length / itemsPerPage);
+    const paginatedApplications = filteredAndSortedApplications.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+
     return (
         <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
             <Header filters={filters} setFilters={setFilters} setIsAddingNew={setIsAddingNew} />
+            
+            <div className='px-4 py-2'>
+                <AppPagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                />           
+            </div>
+
             {user && (
                 <>
                     <TableApp 
@@ -137,7 +157,7 @@ export default function ApplicationsTable() {
                         sortConfig={sortConfig}
                         isAddingNew={isAddingNew}
                         setIsAddingNew={setIsAddingNew}
-                        filteredAndSortedApplications={filteredAndSortedApplications}
+                        filteredAndSortedApplications={paginatedApplications}
                         formatDate={formatDate}
                         statusOptions={statusOptions}
                         editingId={editingId}
@@ -146,9 +166,9 @@ export default function ApplicationsTable() {
                         handleCancelEdit={handleCancelEdit}
                     />
 
-                    {filteredAndSortedApplications.length > 0 && (
+                    {paginatedApplications.length > 0 && (
                         <TableFooterApp
-                            filteredAndSortedApplications={filteredAndSortedApplications}
+                            filteredAndSortedApplications={paginatedApplications}
                             applications={applications}                
                         />
                     )}
