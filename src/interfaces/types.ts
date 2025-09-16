@@ -31,3 +31,12 @@ export interface IApplicationForm extends IApplicationBase {
     cv_path: File | null;
     cover_letter_path: File | null;
 }
+
+export interface IStats {
+    byStatus: { status: string, total: number }[];
+    topCompanies: { company: string, total: number }[];
+    upcomingInterviews: { position: string, company: string, interview_date: string }[];
+    totalApplications: number;
+    applicationsOverTime: { year: number, month?: number, week?: number, total: number }[];
+    positions: { position: string, total: number }[];
+}

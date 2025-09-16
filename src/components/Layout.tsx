@@ -18,7 +18,7 @@ export default function Layout({ children, onLogout }: LayoutProps) {
     const navigationItems = [
         { href: "/dashboard", icon: Home, label: "Tableau de bord" },
         { href: "/applications", icon: Briefcase, label: "Candidatures" },
-        { href: "/statistics", icon: BarChart3, label: "Statistiques" },
+        { href: "/stats", icon: BarChart3, label: "Statistiques" },
         { href: "/profile", icon: UserCircle, label: "Profil", requiresAuth: true },
     ]
 
