@@ -1,7 +1,7 @@
-import { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import apiClient from '../services/apiClient';
 import { toast } from 'sonner';
-import type { IApplication, IApplicationForm } from '../interfaces/types';
+import type { IApplication } from '../interfaces/types';
 import Header from '../components/applications/Header';
 import TableApp from '../components/applications/TableApp';
 import { filterAndSortApplications } from '../utils/filterAndSortApplications';
@@ -18,6 +18,8 @@ const statusOptions = [
 
 export default function ApplicationsTable() {
     const [applications, setApplications] = useState<IApplication[]>([]);
+    const [editingId, setEditingId] = React.useState<number | null>(null);
+    
     const { user } = useUser();
 
     useEffect(() => {
@@ -47,17 +49,6 @@ export default function ApplicationsTable() {
     } | null>(null);
 
     const [isAddingNew, setIsAddingNew] = useState(false);
-    //const [editingId, setEditingId] = useState<number | null>(null);
-
-    const [newApplication, setNewApplication] = useState<Partial<IApplicationForm>>({
-        position: '',
-        company: '',
-        job_url: '',
-        applied_date: new Date().toISOString().split('T')[0],
-        status: 'applied',
-        interview_date: '',
-        notes: ''
-    });
 
     const handleSort = (key: keyof IApplication) => {
         setSortConfig(current => ({
@@ -70,12 +61,54 @@ export default function ApplicationsTable() {
         return filterAndSortApplications(applications, filters, sortConfig ?? undefined);
     }, [applications, filters, sortConfig]);
 
+    const appToEdit = editingId ? applications.find(app => app.id === editingId) : undefined;
+
     const { formik } = useApplicationForm(
         setApplications,
         setIsAddingNew,
+        setEditingId,
         applications,
-        user?.id ?? null
-    )
+        user?.id ?? null,
+        appToEdit 
+    );
+
+    useEffect(() => {
+        if (editingId && appToEdit) {            
+            const formatDateForInput = (dateString: string | null | undefined): string => {
+                if (!dateString) return '';
+                const dateOnly = dateString.split(' ')[0].split('T')[0];
+                return dateOnly || '';
+            };
+            
+            setTimeout(() => {
+                formik.setValues({
+                    id: appToEdit.id,
+                    user_id: appToEdit.user_id ?? user?.id ?? 0,
+                    position: appToEdit.position ?? "",
+                    company: appToEdit.company ?? "",
+                    job_url: appToEdit.job_url ?? "",
+                    applied_date: formatDateForInput(appToEdit.applied_date) || new Date().toISOString().split("T")[0],
+                    status: appToEdit.status ?? "applied",
+                    interview_date: formatDateForInput(appToEdit.interview_date) || null,
+                    notes: appToEdit.notes ?? "",
+                    cv_path: null,
+                    cover_letter_path: null,
+                });
+            }, 0);
+        } else if (!editingId && !isAddingNew) {
+            formik.resetForm();
+        }
+    }, [editingId, appToEdit, user?.id, isAddingNew]);
+
+    const handleEdit = (id: number) => {
+        setEditingId(id);
+        setIsAddingNew(false); 
+    };
+
+    const handleCancelEdit = () => {
+        setEditingId(null);
+        formik.resetForm();
+    };
 
     const handleDelete = async (id: number) => {
         try {
@@ -107,6 +140,10 @@ export default function ApplicationsTable() {
                         filteredAndSortedApplications={filteredAndSortedApplications}
                         formatDate={formatDate}
                         statusOptions={statusOptions}
+                        editingId={editingId}
+                        setEditingId={setEditingId}
+                        handleEdit={handleEdit}
+                        handleCancelEdit={handleCancelEdit}
                     />
 
                     {filteredAndSortedApplications.length > 0 && (

@@ -17,7 +17,11 @@ interface TableAppProps {
     statusOptions: { value: string; label: string }[];
     isAddingNew: boolean;
     setIsAddingNew: React.Dispatch<React.SetStateAction<boolean>>;
+    editingId: number | null;
+    setEditingId: React.Dispatch<React.SetStateAction<number | null>>;
     handleDelete: (id: number) => void;
+    handleEdit: (id: number) => void;
+    handleCancelEdit: () => void;
 }
 
 const statusColors = {
@@ -37,9 +41,13 @@ const TableApp: React.FC<TableAppProps> = ({
     statusOptions,
     isAddingNew,
     setIsAddingNew,
-    handleDelete
+    handleDelete,
+    editingId,
+    setEditingId,
+    handleEdit,
+    handleCancelEdit
 }) => {
-    const { isOpen, open, close } = useModal(); // <-- un seul hook central
+    const { isOpen, open, close } = useModal();
     const [selectedAppId, setSelectedAppId] = React.useState<number | null>(null);
 
     const handleOpenDeleteModal = React.useCallback((id: number) => {
@@ -47,6 +55,21 @@ const TableApp: React.FC<TableAppProps> = ({
         open();
     }, [open]);
 
+    const handleEditClick = React.useCallback((id: number) => {
+        handleEdit(id);
+    }, [handleEdit]);
+
+    const handleCancelEditClick = React.useCallback(() => {
+        handleCancelEdit();
+    }, [handleCancelEdit]);
+
+    const inputMode = isAddingNew ? 'new' : editingId !== null ? 'edit' : null;
+
+    React.useEffect(() => {
+        if (inputMode === 'new') {
+            formik.resetForm();
+        }
+    }, [inputMode]);
 
     return (
         <div className="overflow-x-auto">
@@ -54,32 +77,39 @@ const TableApp: React.FC<TableAppProps> = ({
                 <ThTitle sortConfig={sortConfig} onSort={handleSort} />
 
                 <tbody className="bg-white divide-y divide-gray-200">
-                    {isAddingNew && (
+                    {inputMode && (
                         <TrInput
                             formik={formik}
                             statusOptions={statusOptions}
                             setIsAddingNew={setIsAddingNew}
+                            onCancel={() => {
+                                if (inputMode === 'new') setIsAddingNew(false);
+                                if (inputMode === 'edit') handleCancelEditClick();
+                            }}
+                            isEditing={inputMode === 'edit'}
                         />
                     )}
 
-                    {filteredAndSortedApplications.map(app => (
-                        <TrContent
-                            key={app.id}
-                            app={app}
-                            formatDate={formatDate}
-                            statusColors={statusColors}
-                            statusOptions={statusOptions}
-                            onDelete={() => handleOpenDeleteModal(app.id)}
-                        />
-                    ))}
+                    {filteredAndSortedApplications.map(app =>
+                        editingId === app.id ? null : (
+                            <TrContent
+                                key={app.id}
+                                app={app}
+                                formatDate={formatDate}
+                                statusColors={statusColors}
+                                statusOptions={statusOptions}
+                                onDelete={() => handleOpenDeleteModal(app.id)}
+                                onEdit={() => handleEditClick(app.id)}
+                            />
+                        )
+                    )}
 
-                    {filteredAndSortedApplications.length === 0 && !isAddingNew && (
+                    {!inputMode && filteredAndSortedApplications.length === 0 && (
                         <TrFooter setIsAddingNew={setIsAddingNew} />
                     )}
                 </tbody>
             </table>
 
-            {/* DeleteModal centralisé */}
             {selectedAppId !== null && (
                 <DeleteModal
                     isOpen={isOpen}

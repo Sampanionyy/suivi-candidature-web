@@ -1,48 +1,57 @@
-import { useFormik } from "formik"
-import * as Yup from "yup"
-import { useState } from "react"
-import type { IApplication, IApplicationForm } from "../interfaces/types"
-import { addApplication } from "../services/applicationService"
-import { toast } from "sonner"
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { useState } from "react";
+import type { IApplication, IApplicationForm } from "../interfaces/types";
+import { addApplication, updateApplication } from "../services/applicationService";
+import { toast } from "sonner";
 
 const applicationSchema = Yup.object({
     position: Yup.string().required("Le poste est requis"),
     company: Yup.string().required("L'entreprise est requise"),
     applied_date: Yup.string().required("La date est requise"),
     status: Yup.string().required("Le statut est requis"),
-})
+});
 
 export const useApplicationForm = (
     setApplications: React.Dispatch<React.SetStateAction<IApplication[]>>,
     setIsAddingNew: React.Dispatch<React.SetStateAction<boolean>>,
+    setEditingId: React.Dispatch<React.SetStateAction<number | null>>,
     applications: IApplication[],
-    userId: number | null
+    userId: number | null,
+    initialApplication?: IApplication 
 ) => {
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(false);
 
     const formik = useFormik<Partial<IApplicationForm>>({
         initialValues: {
-            user_id: userId,
-            position: "",
-            company: "",
-            job_url: "",
-            applied_date: new Date().toISOString().split("T")[0],
-            status: "applied",
-            interview_date: null,
-            notes: "",
+            id: initialApplication?.id,
+            user_id: initialApplication?.user_id ?? userId,
+            position: initialApplication?.position ?? "",
+            company: initialApplication?.company ?? "",
+            job_url: initialApplication?.job_url ?? "",
+            applied_date: initialApplication?.applied_date ?? new Date().toISOString().split("T")[0],
+            status: initialApplication?.status ?? "applied",
+            interview_date: initialApplication?.interview_date ?? null,
+            notes: initialApplication?.notes ?? "",
             cv_path: null,
             cover_letter_path: null,
         },
         validationSchema: applicationSchema,
         onSubmit: async (values, { resetForm, setErrors }) => {
-            setLoading(true)
+            setLoading(true);
             try {
-                const result = await addApplication(values)
+                let result;
+                if (values.id) {
+                    result = await updateApplication(values.id, values);
+                } else {
+                    result = await addApplication(values);
+                }
 
-                if (result.success) {
+                if (result.success) {                    
                     const newApp: IApplication = {
                         id:
                             result.data.data?.id ??
+                            values.id ??
                             (applications.length
                                 ? Math.max(...applications.map((a) => a.id)) + 1
                                 : 1),
@@ -54,33 +63,41 @@ export const useApplicationForm = (
                         status: values.status ?? "applied",
                         interview_date: values.interview_date ?? null,
                         notes: values.notes ?? "",
-                        cv_path: result.data.data?.cv_path ?? null,
-                        cover_letter_path: result.data.data?.cover_letter_path ?? null,
-                        created_at: result.data.data?.created_at ?? new Date().toISOString(),
+                        cv_path: result.data.data?.cv_path ?? values.cv_path ?? null,
+                        cover_letter_path: result.data.data?.cover_letter_path ?? values.cover_letter_path ?? null,
+                        created_at: result.data.data?.created_at ?? initialApplication?.created_at ?? new Date().toISOString(),
                         updated_at: new Date().toISOString(),
+                    };
+
+                    if (values.id) {
+                        setApplications((prev) =>
+                            prev.map((app) => (app.id === values.id ? newApp : app))
+                        );
+                        toast.success("Candidature mise à jour avec succès !");
+                    } else {
+                        setApplications((prev) => [...prev, newApp]);
+                        toast.success("Candidature ajoutée avec succès !");
                     }
 
-                    setApplications((prev) => [...prev, newApp])
-                    resetForm()
-                    setIsAddingNew(false)
-
-                    toast.success("Candidature ajoutée avec succès !")
+                    resetForm();
+                    setIsAddingNew(false);
+                    setEditingId(null);
                 } else {
                     if (result.fieldErrors) {
-                        setErrors(result.fieldErrors)
-                        toast.error("Veuillez corriger les erreurs du formulaire")
+                        setErrors(result.fieldErrors);
+                        toast.error("Veuillez corriger les erreurs du formulaire");
                     } else {
-                        toast.error("Échec de l'ajout de la candidature")
+                        toast.error(values.id ? "Échec de la mise à jour" : "Échec de l'ajout");
                     }
                 }
             } catch (err) {
-                console.error("Erreur lors de l'ajout", err)
-                toast.error("Une erreur est survenue")
+                console.error("Erreur lors de l'ajout/édition", err);
+                toast.error("Une erreur est survenue");
             } finally {
-                setLoading(false)
+                setLoading(false);
             }
         },
-    })
+    });
 
-    return { formik, loading }
-}
+    return { formik, loading };
+};
