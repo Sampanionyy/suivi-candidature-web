@@ -44,7 +44,6 @@ export default function RegisterPage() {
             const result = await registerUser(values);
 
             if (result.success) {
-                console.log("aaaaa");
                 toast.success(result.message || "Inscription réussie ! Vous pouvez maintenant vous connecter.");
                 resetForm();
             } else {

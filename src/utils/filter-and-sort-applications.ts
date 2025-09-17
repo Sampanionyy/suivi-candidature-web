@@ -21,7 +21,6 @@ export function filterAndSortApplications(
 
     let filtered = applications.filter(app => {
 
-        console.log({app, filters});
         const matchesSearch =
             app.position.toLowerCase().includes(searchLower) ||
             app.company.toLowerCase().includes(searchLower) ||

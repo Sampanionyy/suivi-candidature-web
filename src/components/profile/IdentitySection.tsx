@@ -1,0 +1,72 @@
+import React from 'react'
+import { useFormik } from 'formik'
+import { User, Edit3, Save, X } from 'lucide-react'
+import type { IProfile, IProfileFormValues } from '../../interfaces/types'
+import GeneralInformations from './GeneralInformations';
+import ContactLinks from './ContactLinks';
+
+interface IdentitySectionProps {
+    formik: ReturnType<typeof useFormik<IProfileFormValues>>;
+    isEditingProfile: boolean
+    setIsEditingProfile: React.Dispatch<React.SetStateAction<boolean>>
+    profile?: IProfile | null;
+}
+
+const IdentitySection: React.FC<IdentitySectionProps> = ({ formik, isEditingProfile, setIsEditingProfile, profile}) => {
+    return (
+        <form onSubmit={formik.handleSubmit}>
+            <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-fuchsia-100">
+                <div className="bg-gradient-to-r from-fuchsia-300 to-purple-400 p-6 flex justify-between items-center">
+                    <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                        <User size={24} />
+                        Identité
+                    </h2>
+                    {!isEditingProfile ? (
+                        <button
+                            onClick={() => setIsEditingProfile(true)}
+                            className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+                        >
+                            <Edit3 size={16} />
+                            Modifier
+                        </button>
+                    ) : (
+                        <div className="flex gap-2">
+                            <button
+                                type='submit'
+                                className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+                            >
+                                <Save size={16} />
+                                Sauvegarder
+                            </button>
+                            <button
+                                onClick={() => {
+                                    formik.resetForm();
+                                    setIsEditingProfile(false);
+                                }}
+                                className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+                            >
+                                <X size={16} />
+                                Annuler
+                            </button>
+                        </div>
+                    )}
+                </div>
+
+                <div className="p-6 space-y-6">
+                    <GeneralInformations
+                        formik={formik}
+                        isEditingProfile={isEditingProfile}
+                        profile={profile}
+                    />
+
+                    <ContactLinks
+                        formik={formik}
+                        isEditingProfile={isEditingProfile}
+                    />
+                </div>
+            </div>
+        </form>
+    )
+}
+
+export default IdentitySection

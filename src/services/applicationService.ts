@@ -9,7 +9,6 @@ interface BackendError {
 export const getApplications = async () => {
     try {
         const res = await apiClient.get(`/applications`);
-        console.log({res})
         return { success: true, data: res.data };
     } catch (err: any) {
         const data: BackendError = err?.response?.data;

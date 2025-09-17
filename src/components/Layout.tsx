@@ -93,7 +93,7 @@ export default function Layout({ children, onLogout }: LayoutProps) {
                             {user ? (
                                 <div className="flex items-center space-x-3">
                                     <a 
-                                        href="/dashboard/profile"
+                                        href="/profile"
                                         className="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:bg-fuchsia-50 hover:text-fuchsia-600 rounded-xl transition-all duration-200"
                                     >
                                         <UserCircle className="w-5 h-5" />

@@ -9,6 +9,7 @@ import ApplicationsTable from "./pages/Applications"
 import { UserProvider } from './contexts/UserContext';
 import Statistics from "./pages/ApplicationsStats"
 import CalendarPage from "./pages/Calendar"
+import Profile from "./pages/Profile"
 
 function App() {
     return (
@@ -22,6 +23,7 @@ function App() {
                         <Route path="applications" element={<ApplicationsTable />} />
                         <Route path="stats" element={<Statistics />} />
                         <Route path="calendar" element={<CalendarPage />} />
+                        <Route path="profile" element={<Profile />} />
                     </Route>            
                 </Routes>
                 <Toaster />

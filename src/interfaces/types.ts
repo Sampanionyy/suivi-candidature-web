@@ -48,3 +48,40 @@ export interface Interview {
     interview_date: string;
     status: string;
 }
+
+export interface IProfile {
+    id: number;
+    user_id: number;
+    first_name: string | null;
+    last_name: string | null;
+    phone: string | null;
+    address: string | null;
+    photo_url: string | null;
+    linkedin_url: string | null;
+    github_url: string | null;
+    portfolio_url: string | null;
+    summary: string | null;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface IDocument {
+    id: number;
+    user_id: number;
+    name: string;
+    type: 'CV' | 'LM';
+    file_url: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface IProfileFormValues {
+    first_name: string;
+    last_name: string;
+    phone: string;
+    address: string;
+    linkedin_url: string;
+    github_url: string;
+    portfolio_url: string;
+    summary: string;
+}

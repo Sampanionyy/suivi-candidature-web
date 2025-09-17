@@ -32,6 +32,8 @@ const TrContent: React.FC<TrContentProps> = React.memo(({
     }, [onDelete]);
 
     const handleLinkClick = React.useCallback((url: string) => (e: React.MouseEvent) => {
+        console.log('test');
+        
         e.preventDefault();
         e.stopPropagation();
         window.open(url, '_blank', 'noopener,noreferrer');
@@ -80,9 +82,9 @@ const TrContent: React.FC<TrContentProps> = React.memo(({
             <td className="px-6 py-4">
                 <div className="flex space-x-2">
                     {app.cv_path && (
-                        <button 
-                            onClick={handleLinkClick(app.cv_path)}
-                            className="p-1 text-blue-600 hover:bg-blue-100 rounded transition-colors" 
+                        <button
+                            onClick={handleLinkClick(`${import.meta.env.VITE_API_BASE_URL}${app.cv_path}`)}
+                            className="p-1 text-blue-600 hover:bg-blue-100 rounded transition-colors"
                             title="CV"
                         >
                             <FileText className="w-4 h-4" />
@@ -90,7 +92,7 @@ const TrContent: React.FC<TrContentProps> = React.memo(({
                     )}
                     {app.cover_letter_path && (
                         <button 
-                            onClick={handleLinkClick(app.cover_letter_path)}
+                            onClick={handleLinkClick(`${import.meta.env.VITE_API_BASE_URL}${app.cover_letter_path}`)}
                             className="p-1 text-green-600 hover:bg-green-100 rounded transition-colors" 
                             title="Lettre de motivation"
                         >
@@ -99,7 +101,7 @@ const TrContent: React.FC<TrContentProps> = React.memo(({
                     )}
                     {app.job_url && (
                         <button 
-                            onClick={handleLinkClick(app.job_url)}
+                            onClick={handleLinkClick(`http://localhost:8000${app.job_url}`)}
                             className="p-1 text-purple-600 hover:bg-purple-100 rounded transition-colors" 
                             title="Offre d'emploi"
                         >
