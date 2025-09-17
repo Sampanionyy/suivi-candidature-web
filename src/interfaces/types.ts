@@ -40,3 +40,11 @@ export interface IStats {
     applicationsOverTime: { year: number, month?: number, week?: number, total: number }[];
     positions: { position: string, total: number }[];
 }
+
+export interface Interview {
+    id: number;
+    position: string;
+    company: string;
+    interview_date: string;
+    status: string;
+}

@@ -8,6 +8,7 @@ import Layout from "./components/Layout"
 import ApplicationsTable from "./pages/Applications"
 import { UserProvider } from './contexts/UserContext';
 import Statistics from "./pages/ApplicationsStats"
+import CalendarPage from "./pages/Calendar"
 
 function App() {
     return (
@@ -20,12 +21,12 @@ function App() {
                         <Route path="dashboard" element={<Dashboard />} />
                         <Route path="applications" element={<ApplicationsTable />} />
                         <Route path="stats" element={<Statistics />} />
+                        <Route path="calendar" element={<CalendarPage />} />
                     </Route>            
                 </Routes>
                 <Toaster />
             </Router>
         </UserProvider>
-
     )
 }
 

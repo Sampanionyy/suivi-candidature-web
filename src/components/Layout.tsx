@@ -1,4 +1,4 @@
-import { User, LogOut, Home, UserCircle, Briefcase, BarChart3 } from "lucide-react"
+import { User, LogOut, Home, UserCircle, Briefcase, BarChart3, Calendar } from "lucide-react"
 import { Outlet } from "react-router-dom"
 import type { ReactNode } from 'react'
 import { useUser } from "../contexts/UserContext"
@@ -19,7 +19,7 @@ export default function Layout({ children, onLogout }: LayoutProps) {
         { href: "/dashboard", icon: Home, label: "Tableau de bord" },
         { href: "/applications", icon: Briefcase, label: "Candidatures" },
         { href: "/stats", icon: BarChart3, label: "Statistiques" },
-        { href: "/profile", icon: UserCircle, label: "Profil", requiresAuth: true },
+        { href: "/calendar", icon: Calendar, label: "Calendrier", requiresAuth: true },
     ]
 
     const filteredNavigation = navigationItems.filter(item => 
