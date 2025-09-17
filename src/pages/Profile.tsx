@@ -3,7 +3,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { User } from 'lucide-react';
 import { toast } from 'sonner';
-import apiClient from '../services/apiClient';
+import apiClient from '../services/api-service';
 import type { IDocument, IProfile, IProfileFormValues } from '../interfaces/types';
 import IdentitySection from '../components/profile/IdentitySection';
 import DocumentsSection from '../components/profile/DocumentsSection';
@@ -29,6 +29,7 @@ const Profile: React.FC = () => {
                 setProfile(profileData);
                 setDocuments(documentsData);
             } catch (error) {
+                console.error('Erreur fetch data:', error);
                 toast.error("Erreur lors de la récupération des données !");
             } finally {
                 setIsLoading(false);
@@ -51,72 +52,71 @@ const Profile: React.FC = () => {
             summary: profile?.summary || '',
         },
         validationSchema: Yup.object({
-            first_name: Yup.string().required('Le prénom est requis'),
-            last_name: Yup.string().required('Le nom est requis'),
-            phone: Yup.string().optional(),
-            address: Yup.string().optional(),
-            linkedin_url: Yup.string().url('URL invalide').optional(),
-            github_url: Yup.string().url('URL invalide').optional(),
-            portfolio_url: Yup.string().url('URL invalide').optional(),
-            summary: Yup.string().optional(),
+            first_name: Yup.string()
+                .min(2, 'Le prénom doit contenir au moins 2 caractères')
+                .max(50, 'Le prénom ne peut pas dépasser 50 caractères')
+                .required('Le prénom est requis'),
+            last_name: Yup.string()
+                .min(2, 'Le nom doit contenir au moins 2 caractères')
+                .max(50, 'Le nom ne peut pas dépasser 50 caractères')
+                .required('Le nom est requis'),
+            phone: Yup.string()
+                .matches(/^[+]?[\d\s\-\(\)]+$/, 'Format de téléphone invalide')
+                .optional(),
+            address: Yup.string()
+                .max(200, 'L\'adresse ne peut pas dépasser 200 caractères')
+                .optional(),
+            linkedin_url: Yup.string()
+                .url('URL LinkedIn invalide')
+                .optional(),
+            github_url: Yup.string()
+                .url('URL GitHub invalide')
+                .optional(),
+            portfolio_url: Yup.string()
+                .url('URL Portfolio invalide')
+                .optional(),
+            summary: Yup.string()
+                .max(500, 'Le résumé ne peut pas dépasser 500 caractères')
+                .optional(),
         }),
         onSubmit: async (values) => {
             if (!profile) return;
             try {
-                setIsLoading(true);
                 const response = await apiClient.put('profile', values);
                 setProfile(response.data.data);
                 setIsEditingProfile(false);
                 toast.success("Profil mis à jour avec succès !");
-            } catch (error) {
-                console.error(error);
-                toast.error("Erreur lors de la sauvegarde du profil !");
-            } finally {
-                setIsLoading(false);
+            } catch (error: any) {
+                console.error('Erreur sauvegarde profil:', error);
+                toast.error(
+                    error.response?.data?.message || 
+                    "Erreur lors de la sauvegarde du profil !"
+                );
             }
         },
     });
-
-    const handleFileUpload = async (file: File, type: 'CV' | 'LM') => {
-        if (!profile) return;
-        setUploadingFile(true);
-        try {
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('user_id', profile.id.toString());
-            formData.append('type', type);
-            formData.append('name', file.name);
-
-            const response = await apiClient.post('documents', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
-            });
-
-            const newDoc: IDocument = response.data.data;
-            setDocuments([...documents, newDoc]);
-            toast.success('Document ajouté avec succès !');
-        } catch (error) {
-            console.error(error);
-            toast.error("Erreur lors de l'upload du document !");
-        } finally {
-            setUploadingFile(false);
-        }
-    };
 
     const handleDeleteDocument = async (id: number) => {
         try {
             await apiClient.delete(`documents/${id}`);
             setDocuments(documents.filter(doc => doc.id !== id));
             toast.success('Document supprimé !');
-        } catch (error) {
-            console.error(error);
-            toast.error("Erreur lors de la suppression du document !");
+        } catch (error: any) {
+            console.error('Erreur suppression document:', error);
+            toast.error(
+                error.response?.data?.message ||
+                "Erreur lors de la suppression du document !"
+            );
         }
     };
 
     if (isLoading) {
         return (
             <div className="min-h-screen bg-gradient-to-br from-fuchsia-50 to-purple-50 p-6 flex items-center justify-center">
-                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-fuchsia-300"></div>
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-fuchsia-300 mx-auto mb-4"></div>
+                    <p className="text-gray-600">Chargement de votre profil...</p>
+                </div>
             </div>
         );
     }
@@ -140,6 +140,7 @@ const Profile: React.FC = () => {
                             setIsEditingProfile={setIsEditingProfile}
                             formik={formik}
                             profile={profile}
+                            setProfile={setProfile}
                         />
                     </div>
 

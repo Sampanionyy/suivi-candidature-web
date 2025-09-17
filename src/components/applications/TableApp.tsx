@@ -4,9 +4,9 @@ import TrInput from './TrInput';
 import TrContent from './TrContent';
 import TrFooter from './TrFooter';
 import ThTitle from './TableHeaderApp';
-import { useApplicationForm } from '../../hooks/useApplicationForm';
+import { useApplicationForm } from '../../hooks/use-application-form';
 import DeleteModal from './DeleteModal';
-import { useModal } from '../../hooks/useModal';
+import { useModal } from '../../hooks/use-modal';
 
 interface TableAppProps {
     sortConfig: { key: keyof IApplication; direction: 'asc' | 'desc' } | null;

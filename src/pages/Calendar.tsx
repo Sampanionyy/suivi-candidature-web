@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import apiClient from '../services/apiClient'; 
+import apiClient from '../services/api-service'; 
 import CalendarDetails from '../components/applications/calendar/CalendarDetails';
 import type { Interview } from '../interfaces/types';
 import CalendarPrincipal from '../components/applications/calendar/CalendarPrincipal';

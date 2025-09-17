@@ -2,7 +2,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useState } from "react";
 import type { IApplication, IApplicationForm } from "../interfaces/types";
-import { addApplication, updateApplication } from "../services/applicationService";
+import { addApplication, updateApplication } from "../services/application-service";
 import { toast } from "sonner";
 
 const applicationSchema = Yup.object({

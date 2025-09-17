@@ -10,9 +10,25 @@ interface IdentitySectionProps {
     isEditingProfile: boolean
     setIsEditingProfile: React.Dispatch<React.SetStateAction<boolean>>
     profile?: IProfile | null;
+    setProfile: React.Dispatch<React.SetStateAction<IProfile | null>>;
 }
 
-const IdentitySection: React.FC<IdentitySectionProps> = ({ formik, isEditingProfile, setIsEditingProfile, profile}) => {
+const IdentitySection: React.FC<IdentitySectionProps> = ({ 
+    formik, 
+    isEditingProfile, 
+    setIsEditingProfile, 
+    profile,
+    setProfile
+}) => {
+    const handlePhotoUpdate = (photoUrl: string) => {
+        if (profile) {
+            setProfile({
+                ...profile,
+                photo_url: photoUrl
+            });
+        }
+    };
+
     return (
         <form onSubmit={formik.handleSubmit}>
             <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-fuchsia-100">
@@ -23,6 +39,7 @@ const IdentitySection: React.FC<IdentitySectionProps> = ({ formik, isEditingProf
                     </h2>
                     {!isEditingProfile ? (
                         <button
+                            type="button"
                             onClick={() => setIsEditingProfile(true)}
                             className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
                         >
@@ -33,17 +50,20 @@ const IdentitySection: React.FC<IdentitySectionProps> = ({ formik, isEditingProf
                         <div className="flex gap-2">
                             <button
                                 type='submit'
-                                className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+                                disabled={formik.isSubmitting}
+                                className="bg-white/20 hover:bg-white/30 disabled:bg-white/10 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
                             >
                                 <Save size={16} />
-                                Sauvegarder
+                                {formik.isSubmitting ? 'Sauvegarde...' : 'Sauvegarder'}
                             </button>
                             <button
+                                type="button"
                                 onClick={() => {
                                     formik.resetForm();
                                     setIsEditingProfile(false);
                                 }}
-                                className="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
+                                disabled={formik.isSubmitting}
+                                className="bg-white/10 hover:bg-white/20 disabled:bg-white/5 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
                             >
                                 <X size={16} />
                                 Annuler
@@ -57,6 +77,7 @@ const IdentitySection: React.FC<IdentitySectionProps> = ({ formik, isEditingProf
                         formik={formik}
                         isEditingProfile={isEditingProfile}
                         profile={profile}
+                        onPhotoUpdate={handlePhotoUpdate}
                     />
 
                     <ContactLinks

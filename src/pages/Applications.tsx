@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import apiClient from '../services/apiClient';
+import apiClient from '../services/api-service';
 import { toast } from 'sonner';
 import type { IApplication } from '../interfaces/types';
 import Header from '../components/applications/Header';
@@ -7,7 +7,7 @@ import TableApp from '../components/applications/TableApp';
 import { filterAndSortApplications } from '../utils/filter-and-sort-applications';
 import TableFooterApp from '../components/applications/TableFooterApp';
 import { useUser } from '../contexts/UserContext';
-import { useApplicationForm } from '../hooks/useApplicationForm';
+import { useApplicationForm } from '../hooks/use-application-form';
 import AppPagination from '../components/AppPagination';
 
 const statusOptions = [

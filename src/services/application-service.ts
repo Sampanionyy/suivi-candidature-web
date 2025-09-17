@@ -1,5 +1,5 @@
 import type { IApplicationForm } from '../interfaces/types';
-import apiClient from './apiClient';
+import apiClient from './api-service';
 
 interface BackendError {
     errors?: Record<string, string[]>;

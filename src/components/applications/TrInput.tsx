@@ -5,8 +5,8 @@ import type { IApplicationForm } from '../../interfaces/types';
 import { FormInput } from './FormInput';
 import { FormActions } from './FormActions';
 import { FileUploadSection } from './FileUploadSection';
-import { useFormInputs } from '../../hooks/useFormInputs';
-import { useFormHandlers } from '../../hooks/useFormHandlers';
+import { useFormInputs } from '../../hooks/use-form-inputs';
+import { useFormHandlers } from '../../hooks/use-form-handlers';
 
 interface TrInputProps {
     formik: FormikProps<Partial<IApplicationForm>>;
