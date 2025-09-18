@@ -124,18 +124,19 @@ const Dashboard: React.FC = () => {
             </Card>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card className="p-6 text-center cursor-pointer hover:shadow-lg transition rounded-xl bg-fuchsia-100">
-                    <Link 
-                        to="/applications" 
-                        className="font-medium"
-                    >
-                        Ajouter une candidature
-                    </Link>
-                </Card>
-                <Card className="p-6 text-center cursor-pointer hover:shadow-lg transition rounded-xl">
-                    <span className="font-medium">Accéder au calendrier</span>
-                </Card>
+                <Link to="/applications">
+                    <Card className="p-6 text-center cursor-pointer hover:shadow-lg transition rounded-xl bg-fuchsia-100">
+                        <span className="font-medium">Ajouter une candidature</span>
+                    </Card>
+                </Link>
+
+                <Link to="/calendar">
+                    <Card className="p-6 text-center cursor-pointer hover:shadow-lg transition rounded-xl">
+                        <span className="font-medium">Accéder au calendrier</span>
+                    </Card>
+                </Link>
             </div>
+
         </div>
     );
 };
