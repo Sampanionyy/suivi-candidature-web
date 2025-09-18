@@ -1,5 +1,5 @@
 import { User, LogOut, Home, UserCircle, Briefcase, BarChart3, Calendar, Menu, X } from "lucide-react"
-import { Outlet } from "react-router-dom"
+import { Outlet, useLocation } from "react-router-dom"
 import type { ReactNode } from 'react'
 import { useUser } from "../contexts/UserContext"
 import { useState } from "react"
@@ -12,6 +12,8 @@ interface LayoutProps {
 export default function Layout({ children, onLogout }: LayoutProps) {    
     const { user, logout } = useUser();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const location = useLocation();
+    const currentPath = location.pathname;
 
     const handleLogout = () => {
         logout();
@@ -77,14 +79,20 @@ export default function Layout({ children, onLogout }: LayoutProps) {
                     <ul className="space-y-2">
                         {filteredNavigation.map((item) => {
                             const IconComponent = item.icon
+                            const isActive = currentPath === item.href
                             return (
                                 <li key={item.href}>
                                     <a 
                                         href={item.href}
                                         onClick={closeSidebar}
-                                        className="flex items-center space-x-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-fuchsia-50 hover:text-fuchsia-600 transition-all duration-200 group"
+                                        className={`
+                                            flex items-center space-x-3 px-4 py-3 rounded-xl
+                                            text-gray-700 hover:bg-fuchsia-50 hover:text-fuchsia-600
+                                            transition-all duration-200 group
+                                            ${isActive ? 'bg-fuchsia-100 text-fuchsia-700 font-semibold' : ''}
+                                        `}
                                     >
-                                        <IconComponent className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                                        <IconComponent className={`w-5 h-5 transition-transform group-hover:scale-110 ${isActive ? 'text-fuchsia-700' : ''}`} />
                                         <span className="font-medium">{item.label}</span>
                                     </a>
                                 </li>
