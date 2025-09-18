@@ -28,9 +28,7 @@ export default function Layout({ children, onLogout }: LayoutProps) {
 
     return (
         <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-            {/* Sidebar */}
             <aside className="w-72 bg-white shadow-xl border-r border-gray-200 relative">
-                {/* Header du sidebar - même hauteur que le header principal */}
                 <div className="h-20 px-6 border-b border-gray-200 flex items-center">
                     <div className="flex items-center space-x-3">
                         <div className="w-10 h-10 bg-gradient-to-r from-fuchsia-300 to-pink-300 rounded-xl flex items-center justify-center">
@@ -45,7 +43,6 @@ export default function Layout({ children, onLogout }: LayoutProps) {
                     </div>
                 </div>
 
-                {/* Navigation */}
                 <nav className="p-4 pb-24">
                     <ul className="space-y-2">
                         {filteredNavigation.map((item) => {
@@ -66,9 +63,7 @@ export default function Layout({ children, onLogout }: LayoutProps) {
                 </nav>
             </aside>
 
-            {/* Contenu principal */}
             <main className="flex-1 flex flex-col">
-                {/* Top bar - hauteur fixe pour alignement */}
                 <header className="h-20 bg-white/80 backdrop-blur-sm border-b border-gray-200 px-6 shadow-sm flex items-center">
                     <div className="flex items-center justify-between w-full">
                         <div>
@@ -122,7 +117,6 @@ export default function Layout({ children, onLogout }: LayoutProps) {
                     </div>
                 </header>
 
-                {/* Zone de contenu */}
                 <div className="flex-1 p-6 overflow-auto">
                     <div className="max-w-7xl mx-auto">
                         {children || <Outlet />}

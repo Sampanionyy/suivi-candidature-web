@@ -18,16 +18,24 @@ interface LoginValues {
     email: string;
     password: string;
 }
-export const loginUser = async (values: LoginValues) => {
+
+interface AuthResponse {
+    success: boolean;
+    data?: any;
+    fieldErrors?: Record<string, string>;
+    message?: string;
+}
+
+export const loginUser = async (values: LoginValues): Promise<AuthResponse> => {
     try {
         const res = await axios.post(`${API_BASE}/auth/login`, values);
         const token = res.data.data.token;
         const user = res.data.data.user;
-
-        localStorage.setItem('user', JSON.stringify(user));
-        localStorage.setItem('token', token);
         
-        return { success: true, data: res.data };
+        return { 
+            success: true, 
+            data: { user, token } 
+        };
     } 
     catch (err: any) {
         const data: BackendError = err?.response?.data;
@@ -55,8 +63,7 @@ export const loginUser = async (values: LoginValues) => {
     }
 };
 
-
-export const registerUser = async (values: RegisterValues) => {
+export const registerUser = async (values: RegisterValues): Promise<AuthResponse> => {
     try {
         const res = await axios.post(`${API_BASE}/auth/register`, values);
         

@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/ca
 import { loginUser } from "../../services/auth-service";
 import FormLogin from "../../components/auth/FormLogin";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../../contexts/UserContext";
 
 type LoginValues = {
     email: string;
@@ -23,6 +24,8 @@ const validationSchema = yup.object({
 export default function LoginPage() {
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
+        const { login } = useUser(); 
+
     const navigate = useNavigate();
 
     const formik = useFormik<LoginValues>({
@@ -40,6 +43,8 @@ export default function LoginPage() {
             if (result.success) {
                 toast.success(result.message || "Connexion réussie !");
                 
+                login(result.data.user, result.data.token);
+
                 navigate("/dashboard");
             } else {
                 if (result.fieldErrors) {
