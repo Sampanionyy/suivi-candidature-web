@@ -11,6 +11,7 @@ interface FormInputProps {
     autoFocus?: boolean;
     className?: string;
     rows?: number;
+    disabled?: boolean;
 }
 
 export const FormInput: React.FC<FormInputProps> = ({
@@ -23,7 +24,8 @@ export const FormInput: React.FC<FormInputProps> = ({
     touched,
     autoFocus = false,
     className = '',
-    rows
+    rows,
+    disabled
 }) => {
     const baseClasses = `w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-fuchsia-500 focus:border-fuchsia-500 ${
         touched && error ? 'border-red-500' : 'border-gray-300'
@@ -63,6 +65,7 @@ export const FormInput: React.FC<FormInputProps> = ({
                 onChange={handleChange}
                 autoFocus={autoFocus}
                 className={className.includes('text-xs') ? smallInputClasses : baseClasses}
+                disabled={disabled ?? false}
             />
             {touched && error && (
                 <div className="text-red-500 text-xs mt-1">{error}</div>

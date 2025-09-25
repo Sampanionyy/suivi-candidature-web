@@ -5,11 +5,25 @@ import type { IApplication, IApplicationForm } from "../interfaces/types";
 import { addApplication, updateApplication } from "../services/application-service";
 import { toast } from "sonner";
 
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+
 const applicationSchema = Yup.object({
     position: Yup.string().required("Le poste est requis"),
     company: Yup.string().required("L'entreprise est requise"),
-    applied_date: Yup.string().required("La date est requise"),
+    applied_date: Yup.date()
+        .required("La date est requise")
+        .min(today, "La date doit être aujourd'hui ou ultérieure"),
     status: Yup.string().required("Le statut est requis"),
+    interview_date: Yup.date()
+        .min(today, "La date doit être aujourd'hui ou ultérieure")
+        .nullable()
+        .when("status", {
+            is: "interview",
+            then: (schema) =>
+                schema.required("La date de l'entretien est requise"),
+            otherwise: (schema) => schema.notRequired(),
+        }),
 });
 
 export const useApplicationForm = (
@@ -31,7 +45,7 @@ export const useApplicationForm = (
             job_url: initialApplication?.job_url ?? "",
             applied_date: initialApplication?.applied_date ?? new Date().toISOString().split("T")[0],
             status: initialApplication?.status ?? "applied",
-            interview_date: initialApplication?.interview_date ?? null,
+            interview_date: initialApplication?.interview_date ?? undefined,
             notes: initialApplication?.notes ?? "",
             cv_path: null,
             cover_letter_path: null,
