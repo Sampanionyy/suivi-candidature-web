@@ -32,7 +32,7 @@ const TrContent: React.FC<TrContentProps> = React.memo(({
     }, [onDelete]);
 
     const handleLinkClick = React.useCallback((url: string) => (e: React.MouseEvent) => {
-        console.log('test');
+        console.log({url});
         
         e.preventDefault();
         e.stopPropagation();
