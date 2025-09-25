@@ -12,12 +12,17 @@ import CalendarPage from "./pages/Calendar"
 import Profile from "./pages/Profile"
 import ProtectedRoute from "./components/ProtectedRoute"
 import AuthRedirect from "./components/AuthRedirect"
+import Home from "./pages/Home"  // Page publique
 
 function App() {
     return (
         <UserProvider>
             <Router>
                 <Routes>
+                    {/* Page publique des visiteurs */}
+                    <Route path="/" element={<Home />} />
+
+                    {/* Pages d'auth */}
                     <Route path="/register" element={
                         <AuthRedirect>
                             <Register />
@@ -28,10 +33,9 @@ function App() {
                             <LoginPage />
                         </AuthRedirect>
                     } />
-                    
-                    <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                    
-                    <Route path="/" element={
+
+                    {/* Routes protégées */}
+                    <Route path="/app" element={
                         <ProtectedRoute>
                             <Layout />
                         </ProtectedRoute>
@@ -42,8 +46,9 @@ function App() {
                         <Route path="calendar" element={<CalendarPage />} />
                         <Route path="profile" element={<Profile />} />
                     </Route>
-                    
-                    <Route path="*" element={<Navigate to="/dashboard" replace />} />
+
+                    {/* Redirection fallback */}
+                    <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
                 <Toaster />
             </Router>
