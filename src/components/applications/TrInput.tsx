@@ -95,15 +95,13 @@ const TrInput: React.FC<TrInputProps> = ({
             </td>
 
             <td className="px-3 py-2 md:px-6 md:py-4">
-                {/* 
-
                 <FileUploadSection
                     cvPath={formik.values.cv_path || null}
                     coverLetterPath={formik.values.cover_letter_path || null}
                     jobUrl={localValues.jobUrl}
                     onCvChange={file => formik.setFieldValue('cv_path', file)}
                     onCoverLetterChange={file => formik.setFieldValue('cover_letter_path', file)}
-                />  */}
+                /> 
             </td>
 
             <td className="px-3 py-2 md:px-6 md:py-4">

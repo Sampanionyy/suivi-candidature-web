@@ -63,8 +63,25 @@ export const addApplication = async (values: Partial<IApplicationForm>) => {
 
 export const updateApplication = async (id: number, values: Partial<IApplicationForm>) => {
     try {
-        const res = await apiClient.put(`/applications/${id}`, values);
-        return { success: true, data: res.data };
+        const formData = new FormData();
+        
+        formData.append('_method', 'PUT');
+            
+        Object.entries(values).forEach(([key, value]) => {
+            if (value instanceof File) {
+                formData.append(key, value);
+            } else if (value !== undefined && value !== null) {
+                formData.append(key, String(value));
+            }
+        });
+        
+        let response = await apiClient.post(`/applications/${id}`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        
+        return { success: true, data: response.data };
     } catch (err: any) {
         const data: BackendError = err?.response?.data;
 
