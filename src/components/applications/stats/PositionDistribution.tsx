@@ -27,7 +27,7 @@ const PositionDistribution: React.FC<PositionDistributionProps> = ({ stats }) =>
                             outerRadius={100}
                             label
                         >
-                            {stats.positions.map((entry, index) => (
+                            {stats.positions.map((_, index) => (
                                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                             ))}
                         </Pie>

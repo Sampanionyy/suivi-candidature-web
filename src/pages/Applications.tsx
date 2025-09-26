@@ -166,7 +166,6 @@ export default function ApplicationsTable() {
                         formatDate={formatDate}
                         statusOptions={statusOptions}
                         editingId={editingId}
-                        setEditingId={setEditingId}
                         handleEdit={handleEdit}
                         handleCancelEdit={handleCancelEdit}
                     />

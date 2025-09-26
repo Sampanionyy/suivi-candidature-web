@@ -4,13 +4,12 @@ import { motion, AnimatePresence } from "framer-motion";
 
 interface ModalProps {
     isOpen: boolean;
-    onClose: () => void;
     title?: string;
     children: ReactNode;
     footer?: ReactNode;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, footer }) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, title, children, footer }) => {
     return (
         <AnimatePresence>
             {isOpen && (

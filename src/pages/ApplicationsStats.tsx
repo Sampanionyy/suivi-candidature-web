@@ -2,17 +2,12 @@ import React, { useEffect, useState } from 'react';
 import apiClient from '../services/api-service';
 import { toast } from 'sonner';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import {
-    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell, ResponsiveContainer
-} from 'recharts';
 import ByStatus from '../components/applications/stats/ByStatus';
 import type { IStats } from '../interfaces/types';
 import TopCompanies from '../components/applications/stats/TopCompanies';
 import UpcomingInterviews from '../components/applications/stats/UpcomingInterviews';
 import TotalApplicationsOverTime from '../components/applications/stats/TotalApplicationsOverTime';
 import PositionDistribution from '../components/applications/stats/PositionDistribution';
-
-const COLORS = ['#f472b6', '#fb7185', '#f9a8d4', '#fbcfe8'];
 
 const Statistics: React.FC = () => {
     const [stats, setStats] = useState<IStats | null>(null);

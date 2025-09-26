@@ -12,7 +12,6 @@ const DeleteModal: React.FC<DeleteModalProps> = ({ isOpen, onClose, onConfirm })
     return (
         <Modal
             isOpen={isOpen}
-            onClose={onClose}
             title="Confirmer la suppression"
             footer={
                 <>

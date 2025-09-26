@@ -18,7 +18,6 @@ interface TableAppProps {
     isAddingNew: boolean;
     setIsAddingNew: React.Dispatch<React.SetStateAction<boolean>>;
     editingId: number | null;
-    setEditingId: React.Dispatch<React.SetStateAction<number | null>>;
     handleDelete: (id: number) => void;
     handleEdit: (id: number) => void;
     handleCancelEdit: () => void;
@@ -43,7 +42,6 @@ const TableApp: React.FC<TableAppProps> = ({
     setIsAddingNew,
     handleDelete,
     editingId,
-    setEditingId,
     handleEdit,
     handleCancelEdit
 }) => {

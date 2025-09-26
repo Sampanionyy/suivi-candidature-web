@@ -6,10 +6,9 @@ import { useState } from "react"
 
 interface LayoutProps {
     children?: ReactNode
-    onLogout?: () => void
 }
 
-export default function Layout({ children, onLogout }: LayoutProps) {    
+export default function Layout({ children }: LayoutProps) {    
     const { user, logout } = useUser();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const location = useLocation();
