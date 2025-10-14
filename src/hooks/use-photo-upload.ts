@@ -73,6 +73,7 @@ export const usePhotoUpload = (onPhotoUpdate?: (photoUrl: string) => void) => {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
 
+            
             const photoUrl = response.data?.data?.photo_url;
             if (photoUrl) {
                 onPhotoUpdate?.(photoUrl);

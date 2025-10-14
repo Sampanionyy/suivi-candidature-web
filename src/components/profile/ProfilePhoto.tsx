@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { User, Camera, X } from 'lucide-react';
 import type { IProfile } from '../../interfaces/types';
 import { usePhotoUpload } from '../../hooks/use-photo-upload';
@@ -28,6 +28,8 @@ export const ProfilePhoto: React.FC<ProfilePhotoProps> = ({
         () => previewImage || profile?.photo_url,
         [previewImage, profile?.photo_url]
     );
+
+   
 
     return (
         <div className="relative">
