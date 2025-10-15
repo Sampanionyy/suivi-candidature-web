@@ -50,7 +50,7 @@ export interface Interview {
 }
 
 export interface IProfile {
-    id: number;
+    id?: number;
     user_id: number;
     first_name: string | null;
     last_name: string | null;

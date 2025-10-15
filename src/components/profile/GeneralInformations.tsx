@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useFormik } from 'formik';
 import type { IProfile, IProfileFormValues } from '../../interfaces/types';
 import { ProfilePhoto } from './ProfilePhoto';

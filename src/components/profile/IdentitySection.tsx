@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useFormik } from 'formik'
 import { User, Edit3, Save, X } from 'lucide-react'
 import type { IProfile, IProfileFormValues } from '../../interfaces/types'
 import GeneralInformations from './GeneralInformations';
 import ContactLinks from './ContactLinks';
+import { useUser } from '../../contexts/UserContext';
 
 interface IdentitySectionProps {
     formik: ReturnType<typeof useFormik<IProfileFormValues>>;
@@ -20,12 +21,30 @@ const IdentitySection: React.FC<IdentitySectionProps> = ({
     profile,
     setProfile
 }) => {
+    const { user } = useUser();
+
     const handlePhotoUpdate = (photoUrl: string) => {
         if (profile) {
             setProfile({
                 ...profile,
                 photo_url: photoUrl
             });
+        } else {
+            const newProfile: IProfile = {
+                user_id: user ? user.id : 0,
+                first_name: null,
+                last_name: null,
+                phone: null,
+                address: null,
+                photo_url: photoUrl,
+                linkedin_url: null,
+                github_url: null,
+                portfolio_url: null,
+                summary: null,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+            };
+            setProfile(newProfile);
         }
     };
 
