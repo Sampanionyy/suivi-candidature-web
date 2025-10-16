@@ -50,6 +50,7 @@ const Profile: React.FC = () => {
             github_url: profile?.github_url || '',
             portfolio_url: profile?.portfolio_url || '',
             summary: profile?.summary || '',
+
         },
         validationSchema: Yup.object({
             first_name: Yup.string()
@@ -80,8 +81,11 @@ const Profile: React.FC = () => {
                 .optional(),
         }),
         onSubmit: async (values) => {
-            if (!profile) return;
             try {
+                if(!profile) {
+                    toast.error("Veuillez ajouter une photo de profil avant de sauvegarder.");
+                    return;
+                }
                 const response = await apiClient.put('profile', values);
                 setProfile(response.data.data);
                 setIsEditingProfile(false);

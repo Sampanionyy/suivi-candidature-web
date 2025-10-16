@@ -5,6 +5,7 @@ import type { IProfile, IProfileFormValues } from '../../interfaces/types'
 import GeneralInformations from './GeneralInformations';
 import ContactLinks from './ContactLinks';
 import { useUser } from '../../contexts/UserContext';
+import Preferences from './Preferences';
 
 interface IdentitySectionProps {
     formik: ReturnType<typeof useFormik<IProfileFormValues>>;
@@ -97,6 +98,12 @@ const IdentitySection: React.FC<IdentitySectionProps> = ({
                         isEditingProfile={isEditingProfile}
                         profile={profile}
                         onPhotoUpdate={handlePhotoUpdate}
+                    />
+
+                    <Preferences 
+                        isEditingProfile={isEditingProfile}
+                        profile={profile}
+                        formik={formik}
                     />
 
                     <ContactLinks

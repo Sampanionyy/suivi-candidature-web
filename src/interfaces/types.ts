@@ -61,6 +61,9 @@ export interface IProfile {
     github_url: string | null;
     portfolio_url: string | null;
     summary: string | null;
+    job_contract_types?: IJobContractType[];
+    work_modes?: IWorkMode[];
+    skills?: ISkill[];
     created_at: string;
     updated_at: string;
 }
@@ -84,4 +87,49 @@ export interface IProfileFormValues {
     github_url: string;
     portfolio_url: string;
     summary: string;
+}
+
+export interface JobContract {
+    id: number;
+    name: string;
+}
+
+export interface IWorkMode {
+    id: number;
+    name: string;
+}
+
+export interface ISkill {
+    id: number;
+    name: string;
+    category_id: number;
+}
+
+export interface ISkillCategory {
+    id: number;
+    name: string;
+    skills?: ISkill[];
+}
+
+export interface IJobContractType {
+    id: number;
+    name: string;
+}
+
+export interface IJobContractTypeProfile {
+    id: number;
+    profile: IProfile;
+    job_contract: IJobContractType;
+}
+
+export interface IWorkModeProfile {
+    id: number;
+    profile: IProfile;
+    work_mode: IWorkMode;
+}
+
+export interface ISkillProfile {
+    id: number;
+    profile?: IProfile;
+    skill?: ISkill;
 }
